@@ -1,0 +1,73 @@
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  ApiGateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+        - '*'
+        AllowMethods:
+        - GET
+        - POST
+        - DELETE
+        MaxAge: 600
+      StageName: dev
+  GetProductsList:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetProductsList
+      Handler: getProductsList.handler
+      Runtime: nodejs18.x
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      Events:
+        Products:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: ApiGateway
+            Path: /products
+            Method: get
+      Environment:
+        Variables:
+          NODE_OPTIONS: ' --enable-source-maps'
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+        - getProductsList.ts
+        Minify: true
+        Sourcemap: true
+        Target: es2020
+      SamResourceId: GetProductsList
+  GetProductsById:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetProductsById
+      Handler: getProductsById.handler
+      Runtime: nodejs18.x
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      Events:
+        Products:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: ApiGateway
+            Path: /products/{productId}
+            Method: get
+      Environment:
+        Variables:
+          NODE_OPTIONS: ' --enable-source-maps'
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+        - getProductsById.ts
+        Minify: true
+        Sourcemap: true
+        Target: es2020
+      SamResourceId: GetProductsById

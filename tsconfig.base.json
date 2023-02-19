@@ -1,0 +1,10 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "moduleResolution": "node",
+        "module": "esnext",
+        "paths": {}
+    }
+}
