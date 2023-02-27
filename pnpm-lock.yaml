@@ -41,7 +41,7 @@ importers:
     devDependencies:
       '@nrwl/eslint-plugin-nx': 15.7.2_stpxn2rogoeb2wjor4nzyqik74
       '@nrwl/linter': 15.7.2_uf4p4dfxgfahjoc2ghcxcg6qle
-      '@nrwl/nx-cloud': 15.0.3
+      '@nrwl/nx-cloud': 15.1.1
       '@nrwl/react': 15.7.2_wi7kwhfbxlhncdveqfqfnunpki
       '@nrwl/vite': 15.7.2_pblswna2rkl2w22vxpfqohduqm
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
@@ -69,7 +69,7 @@ importers:
       vite-tsconfig-paths: 4.0.5_typescript@4.9.5
       vitest: 0.25.8_eetf2xjpdhuqcs2dx4ndfgw7iq
 
-  packages/products-api:
+  packages/api:
     specifiers:
       '@types/aws-lambda': ^8.10.92
       '@types/jest': ^29.2.0
@@ -102,7 +102,7 @@ importers:
       ts-node: 10.9.1_tncu2ai53lzgmizdedur7lbibe
       typescript: 4.9.5
 
-  packages/serverless-react-store-app:
+  packages/ui:
     specifiers:
       '@emotion/react': ^11.9.3
       '@emotion/styled': ^11.9.3
@@ -2612,8 +2612,8 @@ packages:
       - typescript
     dev: true
 
-  /@nrwl/nx-cloud/15.0.3:
-    resolution: {integrity: sha512-KvwM8/IbCOlbWIzi+Tm14tJkEdQK3ruN6TPUmeKnkeFZsJyoFw4GCyKJMOLs8y4MQokHgskg3nbF822JLR9xJg==}
+  /@nrwl/nx-cloud/15.1.1:
+    resolution: {integrity: sha512-aIVb87PQpAjwdEaFksQ3rYgFq9MDaBG2KvYZcj/k+z2uWeWH84ha/opO37aCFLf5VXNiyJZGRb/+7vW7BFpNOw==}
     hasBin: true
     dependencies:
       axios: 0.21.4
@@ -2941,7 +2941,7 @@ packages:
       adm-zip: 0.5.10
       archiver: 5.3.1
       axios: 0.21.4
-      fast-glob: 3.2.7
+      fast-glob: 3.2.12
       https-proxy-agent: 5.0.1_supports-color@8.1.1
       ignore: 5.2.4
       isomorphic-ws: 4.0.1_ws@7.5.9

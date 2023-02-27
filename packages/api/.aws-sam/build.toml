@@ -20,6 +20,7 @@ Sourcemap = true
 EntryPoints = ["getProductsList.ts"]
 
 
+
 [function_build_definitions.8f6d46f7-2ed8-4da6-99dd-be12b9fd5cdc]
 codeuri = "/Users/Maksim_Dvoinishnikov/Projects/aws-serverless-cloud-practitioner/packages/products-api/src"
 runtime = "nodejs18.x"
@@ -37,6 +38,7 @@ Minify = true
 Target = "es2020"
 Sourcemap = true
 EntryPoints = ["getProductsById.ts"]
+
 
 
 [layer_build_definitions]

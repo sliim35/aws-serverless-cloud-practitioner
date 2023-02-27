@@ -1,73 +1,77 @@
 Transform: AWS::Serverless-2016-10-31
+
 Globals:
   Function:
     Timeout: 3
+
 Resources:
   ApiGateway:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
         AllowOrigins:
-        - '*'
+          - "*"
         AllowMethods:
-        - GET
-        - POST
-        - DELETE
+          - GET
+          - POST
+          - DELETE
         MaxAge: 600
       StageName: dev
+
   GetProductsList:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: GetProductsList
+      CodeUri: src/
       Handler: getProductsList.handler
       Runtime: nodejs18.x
       Policies:
-      - AWSLambdaBasicExecutionRole
+        - AWSLambdaBasicExecutionRole
       Events:
         Products:
           Type: HttpApi
           Properties:
-            ApiId:
-              Ref: ApiGateway
+            ApiId: !Ref ApiGateway
             Path: /products
             Method: get
-      Environment:
-        Variables:
-          NODE_OPTIONS: ' --enable-source-maps'
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
-        EntryPoints:
-        - getProductsList.ts
         Minify: true
-        Sourcemap: true
         Target: es2020
-      SamResourceId: GetProductsList
+        Sourcemap: true
+        EntryPoints:
+          - getProductsList.ts
+
   GetProductsById:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: GetProductsById
+      CodeUri: src/
       Handler: getProductsById.handler
       Runtime: nodejs18.x
       Policies:
-      - AWSLambdaBasicExecutionRole
+        - AWSLambdaBasicExecutionRole
       Events:
         Products:
           Type: HttpApi
           Properties:
-            ApiId:
-              Ref: ApiGateway
+            ApiId: !Ref ApiGateway
             Path: /products/{productId}
             Method: get
-      Environment:
-        Variables:
-          NODE_OPTIONS: ' --enable-source-maps'
+    Connectors:
+      WithProductPage:
+        Properties:
+          Destination:
+            Id: !Ref Products
+          Permissions:
+            - Read
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
-        EntryPoints:
-        - getProductsById.ts
         Minify: true
-        Sourcemap: true
         Target: es2020
-      SamResourceId: GetProductsById
+        Sourcemap: true
+        EntryPoints:
+          - getProductsById.ts
+
+  Products:
+    Type: AWS::Serverless::SimpleTable
