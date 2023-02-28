@@ -11,7 +11,7 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint --ignore-path .gitignore --fix src",
     "prettier": "prettier src --write",
-    "deploy": "aws s3 sync ./dist s3://www.mdvoy.ru",
+    "deploy": "pnpm build && aws s3 sync ./dist s3://www.mdvoy.ru",
     "invalidate": "aws cloudfront create-invalidation --distribution-id E36KY6M3JILP0K --paths '/*'"
   },
   "dependencies": {

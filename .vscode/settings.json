@@ -1,3 +1,6 @@
 {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/awslabs/goformation/master/schema/cloudformation.schema.json": "file:///Users/Maksim_Dvoinishnikov/Projects/aws-serverless-cloud-practitioner/packages/api/template.yaml"
+    }
 }

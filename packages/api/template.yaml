@@ -33,6 +33,9 @@ Resources:
             ApiId: !Ref ApiGateway
             Path: /products
             Method: get
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Products
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -41,6 +44,13 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - getProductsList.ts
+    Connectors:
+      GetProductsConnector:
+        Properties:
+          Destination:
+            Id: Products
+          Permissions:
+            - Read
 
   GetProductsById:
     Type: AWS::Serverless::Function
@@ -55,15 +65,11 @@ Resources:
           Type: HttpApi
           Properties:
             ApiId: !Ref ApiGateway
-            Path: /products/{productId}
+            Path: /products/{id}
             Method: get
-    Connectors:
-      WithProductPage:
-        Properties:
-          Destination:
-            Id: !Ref Products
-          Permissions:
-            - Read
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Products
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -72,6 +78,18 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - getProductsById.ts
+    Connectors:
+      GetProductByIdConnector:
+        Properties:
+          Destination:
+            Id: Products
+          Permissions:
+            - Read
 
   Products:
     Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: Products
+      PrimaryKey:
+        Name: id
+        Type: String

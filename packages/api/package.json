@@ -9,7 +9,8 @@
         "lint": "eslint '*.ts' --quiet --fix",
         "compile": "tsc",
         "test": "npm run compile && npm run unit",
-        "build": "sam build"
+        "build": "sam build",
+        "deploy": "sam deploy --no-confirm-changeset --stack-name api"
     },
     "dependencies": {
         "esbuild": "^0.14.14"
