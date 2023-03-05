@@ -1,0 +1,91 @@
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Timeout: 60
+
+Resources:
+  ApiGateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - GET
+        MaxAge: 600
+      StageName: dev
+
+  ImportProductsFile:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: import-products-file.handler
+      Runtime: nodejs18.x
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - S3WritePolicy:
+            BucketName: !Ref ImportS3Bucket
+      Events:
+        Products:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ApiGateway
+            Path: /import
+            Method: get
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - import-products-file.ts
+
+  ImportFileParser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: import-file-parser.handler
+      Runtime: nodejs18.x
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Events:
+        Files:
+          Type: S3
+          Properties:
+            Bucket: !Ref ImportS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: uploaded/
+    Connectors:
+      ReadCSVFile:
+        Properties:
+          Destination:
+            Id: ImportS3Bucket
+          Permissions:
+            - Read
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - import-file-parser.ts
+
+  ImportS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: www.import.mdvoy.ru
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - PUT
+            AllowedOrigins:
+              - "*"

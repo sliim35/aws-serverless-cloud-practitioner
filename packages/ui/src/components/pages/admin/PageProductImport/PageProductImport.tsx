@@ -1,9 +1,9 @@
-import API_PATHS from "~/constants/apiPaths";
-import ProductsTable from "~/components/pages/admin/PageProductImport/components/ProductsTable";
-import CSVFileImport from "~/components/pages/admin/PageProductImport/components/CSVFileImport";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import API_PATHS from '~/constants/apiPaths';
+import ProductsTable from '~/components/pages/admin/PageProductImport/components/ProductsTable';
+import CSVFileImport from '~/components/pages/admin/PageProductImport/components/CSVFileImport';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
 
 export default function PageProductImport() {
   return (
@@ -17,9 +17,9 @@ export default function PageProductImport() {
           size="small"
           color="primary"
           variant="contained"
-          sx={{ alignSelf: "end" }}
+          sx={{ alignSelf: 'end' }}
           component={Link}
-          to={"/admin/product-form"}
+          to={'/admin/product-form'}
         >
           Create product
         </Button>
