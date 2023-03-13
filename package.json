@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "pnpx nx run-many --target build"
+    "build": "pnpx nx run-many --target build",
+    "deploy": "sam deploy --no-confirm-changeset --stack-name aws-cloud-practitioner --capabilities CAPABILITY_IAM"
   },
   "private": true,
   "devDependencies": {

@@ -1,4 +1,5 @@
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import csvParser from 'csv-parser';
 
 // Type
@@ -10,25 +11,39 @@ export const handler = async ({ Records: [record] }: S3Event) => {
 
   const bucketName = s3.bucket.name;
   const objectKey = s3.object.key;
+  const sqsUrl = process.env.SQS_URL;
 
-  console.log('aws region -> ', awsRegion);
-  console.log('s3 bucket name -> ', bucketName);
-  console.log('object key -> ', objectKey);
+  console.log('config -> ', {
+    awsRegion,
+    sqs: sqsUrl,
+    bucket: bucketName,
+    object: objectKey,
+  });
 
-  const client = new S3Client({ region: awsRegion });
-  const command = new GetObjectCommand({
+  const s3CLient = new S3Client({ region: awsRegion });
+
+  const s3GetCommand = new GetObjectCommand({
     Bucket: bucketName,
     Key: objectKey,
   });
 
-  return client
-    .send(command)
-    .then(({ Body }) =>
-      (Body as Readable)
-        .pipe(csvParser())
-        .on('data', console.log)
-        .on('error', console.log)
-        .on('end', () => console.log('end event...'))
-    )
-    .catch(console.log);
+  const { Body } = await s3CLient.send(s3GetCommand);
+
+  (Body as Readable)
+    .pipe(csvParser())
+    .on('data', async (row) => {
+      console.log(JSON.stringify(row));
+
+      const sqsClient = new SQSClient({ region: awsRegion });
+      await sqsClient.send(
+        new SendMessageCommand({
+          QueueUrl: sqsUrl,
+          MessageBody: JSON.stringify(row),
+        })
+      );
+    })
+    .on('error', console.log)
+    .on('end', () => {
+      console.log('on finish');
+    });
 };

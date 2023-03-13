@@ -31,6 +31,31 @@ EntryPoints = ["getProductsList.ts"]
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [function_build_definitions.bf66bf6a-4db7-4317-9621-ce5c59e2c566]
 codeuri = "/Users/Maksim_Dvoinishnikov/Projects/aws-serverless-cloud-practitioner/packages/api/src"
 runtime = "nodejs18.x"
@@ -49,6 +74,61 @@ Target = "es2020"
 Sourcemap = true
 EntryPoints = ["getProductsById.ts"]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[function_build_definitions.3e567089-5295-47fc-a573-0bb6c68ea23b]
+codeuri = "/Users/Maksim_Dvoinishnikov/Projects/aws-serverless-cloud-practitioner/packages/api"
+runtime = "nodejs18.x"
+architecture = "x86_64"
+handler = "src/catalogBatchProcess.handler"
+manifest_hash = ""
+packagetype = "Zip"
+functions = ["CatalogBatchProcess"]
+
+[function_build_definitions.3e567089-5295-47fc-a573-0bb6c68ea23b.metadata]
+BuildMethod = "esbuild"
+
+[function_build_definitions.3e567089-5295-47fc-a573-0bb6c68ea23b.metadata.BuildProperties]
+Minify = true
+Target = "es2020"
+Sourcemap = true
+EntryPoints = ["src/catalogBatchProcess.ts"]
+External = ["@aws-sdk/client-dynamodb", "@aws-sdk/util-dynamodb"]
 
 
 

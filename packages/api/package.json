@@ -13,6 +13,7 @@
         "deploy": "sam deploy --no-confirm-changeset --stack-name api"
     },
     "dependencies": {
+        "@aws-sdk/client-sns": "^3.289.0",
         "esbuild": "^0.14.14"
     },
     "devDependencies": {

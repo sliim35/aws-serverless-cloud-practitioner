@@ -86,6 +86,65 @@ Resources:
           Permissions:
             - Read
 
+  CatalogBatchProcess:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/catalogBatchProcess.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonSNSFullAccess
+      Events:
+        CatalogBatchProcessEvent:
+          Type: SQS
+          Properties:
+            BatchSize: 5
+            MaximumBatchingWindowInSeconds: 5
+            Queue: !GetAtt CatalogItemsQueue.Arn
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Products
+          EMAIL_TOPIC_ARN: !GetAtt EmailTopic.TopicArn
+    Connectors:
+      CatalogBatchProcessConnector:
+        Properties:
+          Destination:
+            Id: CatalogItemsQueue
+          Permissions:
+            - Read
+      WriteDBConnector:
+        Properties:
+          Destination:
+            Id: Products
+          Permissions:
+            - Write
+      WriteToEmailSnsTopic:
+        Properties:
+          Destination:
+            Id: EmailTopic
+          Permissions:
+            - Write
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - src/catalogBatchProcess.ts
+        External:
+          - "@aws-sdk/client-dynamodb"
+          - "@aws-sdk/util-dynamodb"
+
+  CatalogItemsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: CatalogItemsQueue
+      SqsManagedSseEnabled: false
+      VisibilityTimeout: 65 # If your batch window is greater than 0, and (batch window) + (function timeout) > (queue visibility timeout), then your effective queue visibility timeout is (batch window) + (function timeout) + 30s
+
   Products:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -93,3 +152,18 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
+
+  EmailTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: "CreateProductTopic"
+
+Outputs:
+  CatalogItemsQueueUrl:
+    Value: !GetAtt CatalogItemsQueue.QueueUrl
+    Export:
+      Name: SQSUrl
+  CatalogItemsQueueArn:
+    Value: !GetAtt CatalogItemsQueue.Arn
+    Export:
+      Name: SQSArn

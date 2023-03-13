@@ -1,0 +1,21 @@
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  CloudX :: AWS Cloud Practitioner
+
+Resources:
+  Ui:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: packages/ui/template.yaml
+
+  Api:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: packages/api/template.yaml
+
+  Import:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: packages/import/template.yaml
+    DependsOn: Api

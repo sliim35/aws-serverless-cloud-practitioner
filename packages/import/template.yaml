@@ -2,7 +2,7 @@ Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Timeout: 60
+    Timeout: 300
 
 Resources:
   ApiGateway:
@@ -19,8 +19,8 @@ Resources:
   ImportProductsFile:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: import-products-file.handler
+      CodeUri: .
+      Handler: import.handler
       Runtime: nodejs18.x
       Policies:
         - AWSLambdaBasicExecutionRole
@@ -40,13 +40,13 @@ Resources:
         Target: es2020
         Sourcemap: true
         EntryPoints:
-          - import-products-file.ts
+          - index.ts
 
   ImportFileParser:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: import-file-parser.handler
+      CodeUri: .
+      Handler: index.importFileParser
       Runtime: nodejs18.x
       Policies:
         - AWSLambdaBasicExecutionRole
@@ -61,6 +61,9 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: uploaded/
+      Environment:
+        Variables:
+          SQS_URL: !ImportValue SQSUrl
     Connectors:
       ReadCSVFile:
         Properties:
@@ -71,11 +74,11 @@ Resources:
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
-        Minify: true
-        Target: es2020
+        Minify: false
+        Target: es2022
         Sourcemap: true
         EntryPoints:
-          - import-file-parser.ts
+          - index.ts
 
   ImportS3Bucket:
     Type: AWS::S3::Bucket
@@ -89,3 +92,14 @@ Resources:
               - PUT
             AllowedOrigins:
               - "*"
+
+  LambdaToSQSConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: ImportFileParser
+      Destination:
+        Type: AWS::SQS::Queue
+        Arn: !ImportValue SQSArn
+      Permissions:
+        - Write
